@@ -4,9 +4,7 @@ Ansible installation has all necessary parameters for connecting to managed host
 
 This script parses ansible configuration to get that parameters. Just place it somewhere in your `$PATH`, like `~/.local/bin`. 
 
-Considered inventory variables: `ansible_host`, `ansible_ssh_host`, `ansible_user`, `ansible_ssh_user`, `ansible_port`, `ansible_ssh_port`, `ansible_ssh_private_key_file`, `ansible_ssh_common_args`, `ansible_ssh_extra_args`.
-
-Considered configuration variables: `ssh_args`, `ssh_executable`.
+Considered inventory variables: `ansible_host`
 
 How it works:
 
@@ -38,5 +36,7 @@ Options:
 
 * Ansible
 * [jq](https://stedolan.github.io/jq/)
+* set the ANS_USR env variable to the desired user you want to use to login to your hosts
+* set the ANS_JUMP_HOST env variable to the desired jumphost hostname
 
 **P.S.** If you like it, don't forget to put a star on its [github repo](https://github.com/selivan/ansible-ssh).
