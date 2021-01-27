@@ -1,7 +1,10 @@
 #!/bin/bash
 
 # Set this to false to disable printing configuration variables before connecting
-debug=true
+debug=false
+
+# Source the user profile variables
+. /home/$USER/ansible-ssh.config
 
 for program in ansible-config ansible-inventory jq; do
     type "$program" > /dev/null || { echo "ERROR: not found: $program"; exit 1; }
@@ -17,7 +20,7 @@ else
 fi
 
 if [ $# -eq 0 ]; then
-    echo "Usage: $(basename $0) [-i INVENTORY] hostname <ssh arguments>"
+    echo "Usage: $(basename $0) [-i INVENTORY] hostname"
     echo
     echo "Using -i before the hostname passes the -i INVENTORY argument to ansible-inventory to retrieve the host."
     echo
@@ -45,7 +48,6 @@ if [ $? -ne 0 ]; then
 fi
 
 # As of ansible 2.0, new style options like ansible_host override old style ansible_ssh_*
-# Except ansible_ssh_common_args and ansible_ssh_extra_args
 ansible_ssh_host=$(echo "$inventory" | jq ".ansible_ssh_host?" | grep -v '^null$' | tr -d \")
 ansible_host=$(echo "$inventory" | jq ".ansible_host?" | grep -v '^null$' | tr -d \")
 # Assign new value if variable is not set or empty
@@ -53,5 +55,10 @@ ansible_host="${ansible_host:-$ansible_ssh_host}"
 ansible_host="${ansible_host:-$host}"
 $debug && echo "ansible_host: $ansible_host"
 
-$debug && echo result command: ${ssh_executable} -J $ANS_USR@$ANS_JUMP_HOST:22 $ANS_USR@${ansible_host} $@
-exec ${ssh_executable} -J $ANS_USR@$ANS_JUMP_HOST:22 $ANS_USR@${ansible_host} $@
+if [ "$use_jumphost" == "Y" ]; then
+    $debug && echo result command: ${ssh_executable} -J $ans_usr@$ans_jumphost:22 $ans_usr@${ansible_host} $@
+    exec ${ssh_executable} -J $ans_usr@$ans_jumphost:22 $ans_usr@${ansible_host} $@
+    else
+    $debug && echo result command: ${ssh_executable} $ans_usr@${ansible_host} $@
+    exec ${ssh_executable} $ans_usr@${ansible_host} $@
+fi
