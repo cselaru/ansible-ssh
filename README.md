@@ -4,7 +4,7 @@ Ansible installation has all necessary parameters for connecting to managed host
 
 This script parses ansible configuration to get that parameters. Just place it somewhere in your `$PATH`, like `~/.local/bin`. 
 
-Considered inventory variables: `ansible_host`
+The script was modified so that it supports this scenario: you have to use a jumphost/bastion and the username is different then the one used by Ansible (NPA account).
 
 How it works:
 
@@ -12,16 +12,10 @@ How it works:
 user@work$ cd my_ansible_repo
 user@work$ cat hosts | grep server1
 server1 ansible_host=192.168.0.1 ansible_user=root ansible_port=2222
-user@work$ cat ansible.cfg | grep ssh_args
-ssh_args = -C -o ControlMaster=auto -o ControlPersist=60s
 
 user@work$ ansible-ssh server1
-ssh_args:  -C -o ControlMaster=auto -o ControlPersist=60s
 ansible_host: 192.168.0.1
-ansible_user: root
-ansible_port: 2222
-ansible_ssh_common_args:
-result command: ssh ubuntu@192.168.0.1 -C -o ControlMaster=auto -o ControlPersist=60s -p 2222
+result command: ssh someuser@192.168.0.1
 
 root@server1#
 ```
@@ -36,7 +30,6 @@ Options:
 
 * Ansible
 * [jq](https://stedolan.github.io/jq/)
-* set the ANS_USR env variable to the desired user you want to use to login to your hosts
-* set the ANS_JUMP_HOST env variable to the desired jumphost hostname
+* set the correct values in ansible-ssh.config and put the file in your home folder
 
-**P.S.** If you like it, don't forget to put a star on its [github repo](https://github.com/selivan/ansible-ssh).
+**P.S.** The original code can be found here, please give them some kudos, as i just improved it a bit for my scenario [github repo](https://github.com/selivan/ansible-ssh).
