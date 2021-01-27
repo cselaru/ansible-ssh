@@ -55,10 +55,16 @@ ansible_host="${ansible_host:-$ansible_ssh_host}"
 ansible_host="${ansible_host:-$host}"
 $debug && echo "ansible_host: $ansible_host"
 
-if [ "$use_jumphost" == "Y" ]; then
-    $debug && echo result command: ${ssh_executable} -J $ans_usr@$ans_jumphost:22 $ans_usr@${ansible_host} $@
-    exec ${ssh_executable} -J $ans_usr@$ans_jumphost:22 $ans_usr@${ansible_host} $@
+if [ "$hostkey" == "Y" ]; then
+    hostkey_check="-o StrictHostKeyChecking=no"
     else
-    $debug && echo result command: ${ssh_executable} $ans_usr@${ansible_host} $@
-    exec ${ssh_executable} $ans_usr@${ansible_host} $@
+    hostkey_check=""
+fi
+
+if [ "$use_jumphost" == "Y" ]; then
+    $debug && echo result command: ${ssh_executable} $hostkey_check -J $ans_usr@$ans_jumphost:22 $ans_usr@${ansible_host} $@
+    exec ${ssh_executable} $hostkey_check -J $ans_usr@$ans_jumphost:22 $ans_usr@${ansible_host} $@
+    else
+    $debug && echo result command: ${ssh_executable} $hostkey_check $ans_usr@${ansible_host} $@
+    exec ${ssh_executable} $hostkey_check $ans_usr@${ansible_host} $@
 fi
