@@ -62,9 +62,9 @@ if [ "$disable_hostkey_check" == "Y" ]; then
 fi
 
 if [ "$use_jumphost" == "Y" ]; then
-    $debug && echo result command: ${ssh_executable} $hostkey_check -J $ans_usr@$ans_jumphost:22 $ans_usr@${ansible_host} $@
-    exec ${ssh_executable} $hostkey_check -J $ans_usr@$ans_jumphost:22 $ans_usr@${ansible_host} $@
+    $debug && echo result command: ${ssh_executable} $hostkey_check -J $ans_usr@$ans_jumphost:$ans_jump_port $ans_usr@${ansible_host}:$ans_host_port $@
+    exec ${ssh_executable} $hostkey_check -J $ans_usr@$ans_jumphost:$ans_jump_port $ans_usr@${ansible_host}:$ans_host_port $@
     else
-    $debug && echo result command: ${ssh_executable} $hostkey_check $ans_usr@${ansible_host} $@
-    exec ${ssh_executable} $hostkey_check $ans_usr@${ansible_host} $@
+    $debug && echo result command: ${ssh_executable} $hostkey_check $ans_usr@${ansible_host}:$ans_host_port $@
+    exec ${ssh_executable} $hostkey_check $ans_usr@${ansible_host}:$ans_host_port $@
 fi
